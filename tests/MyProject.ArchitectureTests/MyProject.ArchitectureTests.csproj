@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="NetArchTest.Rules" />
+    <PackageReference Include="coverlet.collector" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\MyProject.Domain\MyProject.Domain.csproj" />
+    <ProjectReference Include="..\..\src\MyProject.Application\MyProject.Application.csproj" />
+    <ProjectReference Include="..\..\src\MyProject.Infrastructure\MyProject.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\MyProject.API\MyProject.API.csproj" />
+  </ItemGroup>
+
+</Project>
