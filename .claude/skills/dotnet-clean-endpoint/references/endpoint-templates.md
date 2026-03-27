@@ -32,7 +32,7 @@ using {ProjectName}.Application.Features.Products.GetAllProducts;
 
 namespace {ProjectName}.API.Endpoints.Products;
 
-public class GetAllProductsEndpoint : IEndpoint
+internal sealed class GetAllProductsEndpoint : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
@@ -62,7 +62,7 @@ using {ProjectName}.Application.Features.Products.GetProductById;
 
 namespace {ProjectName}.API.Endpoints.Products;
 
-public class GetProductByIdEndpoint : IEndpoint
+internal sealed class GetProductByIdEndpoint : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
@@ -71,7 +71,10 @@ public class GetProductByIdEndpoint : IEndpoint
             var result = await sender.Send(new GetProductByIdQuery(id));
             return result.IsSuccess
                 ? Results.Ok(result.Value)
-                : Results.Problem(result.Error.Description, statusCode: StatusCodes.Status404NotFound);
+                : Results.Problem(
+                    title: result.Error.Code,
+                    detail: result.Error.Description,
+                    statusCode: StatusCodes.Status404NotFound);
         })
         .WithName("GetProductById")
         .WithTags("Products")
@@ -96,7 +99,7 @@ using {ProjectName}.Application.Features.Products.CreateProduct;
 
 namespace {ProjectName}.API.Endpoints.Products;
 
-public class CreateProductEndpoint : IEndpoint
+internal sealed class CreateProductEndpoint : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
@@ -105,7 +108,10 @@ public class CreateProductEndpoint : IEndpoint
             var result = await sender.Send(command);
             return result.IsSuccess
                 ? Results.Created($"/api/products/{result.Value.Id}", result.Value)
-                : Results.Problem(result.Error.Description, statusCode: StatusCodes.Status400BadRequest);
+                : Results.Problem(
+                    title: result.Error.Code,
+                    detail: result.Error.Description,
+                    statusCode: StatusCodes.Status400BadRequest);
         })
         .WithName("CreateProduct")
         .WithTags("Products")
@@ -130,7 +136,7 @@ using {ProjectName}.Application.Features.Products.UpdateProduct;
 
 namespace {ProjectName}.API.Endpoints.Products;
 
-public class UpdateProductEndpoint : IEndpoint
+internal sealed class UpdateProductEndpoint : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
@@ -140,8 +146,14 @@ public class UpdateProductEndpoint : IEndpoint
             return result.IsSuccess
                 ? Results.Ok(result.Value)
                 : result.Error.Code.EndsWith("NotFound")
-                    ? Results.Problem(result.Error.Description, statusCode: StatusCodes.Status404NotFound)
-                    : Results.Problem(result.Error.Description, statusCode: StatusCodes.Status400BadRequest);
+                    ? Results.Problem(
+                        title: result.Error.Code,
+                        detail: result.Error.Description,
+                        statusCode: StatusCodes.Status404NotFound)
+                    : Results.Problem(
+                        title: result.Error.Code,
+                        detail: result.Error.Description,
+                        statusCode: StatusCodes.Status400BadRequest);
         })
         .WithName("UpdateProduct")
         .WithTags("Products")
@@ -169,7 +181,7 @@ using {ProjectName}.Application.Features.Products.DeleteProduct;
 
 namespace {ProjectName}.API.Endpoints.Products;
 
-public class DeleteProductEndpoint : IEndpoint
+internal sealed class DeleteProductEndpoint : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
@@ -178,7 +190,10 @@ public class DeleteProductEndpoint : IEndpoint
             var result = await sender.Send(new DeleteProductCommand(id));
             return result.IsSuccess
                 ? Results.NoContent()
-                : Results.Problem(result.Error.Description, statusCode: StatusCodes.Status404NotFound);
+                : Results.Problem(
+                    title: result.Error.Code,
+                    detail: result.Error.Description,
+                    statusCode: StatusCodes.Status404NotFound);
         })
         .WithName("DeleteProduct")
         .WithTags("Products")
